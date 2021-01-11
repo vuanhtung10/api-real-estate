@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const url = 'mongodb://localhost:27017/cms';
+const url = 'mongodb://localhost:27017/banhang';
 // const { DB_MONGO: url } = process.env;
 mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
 
