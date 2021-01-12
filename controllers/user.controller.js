@@ -62,10 +62,14 @@ const me = async function(req, res) {
               }
             ]    
           })
-        userUpdate.role.permissions.forEach(element => {
-          permissions.push(element.name)
-        });
-        user.permissions = permissions
+        if(userUpdate.role){
+          if(userUpdate.role.permissions){
+            userUpdate.role.permissions.forEach(element => {
+              permissions.push(element.name)
+            });
+            user.permissions = permissions
+          }
+        }
         if (user) {
             return res.status(200).send({user: user})
         }
