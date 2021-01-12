@@ -41,8 +41,8 @@ const logout = async function(req, res) {
     if (authHeader) {
       const bearerToken = authHeader.split('Bearer ');
       await Token.deleteOne({ token: bearerToken })
-      return res.send('logout success');
     }
+    return res.send('logout success');
   }
   catch (error) {
       return res.status(401).send(error)
