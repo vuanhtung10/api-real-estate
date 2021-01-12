@@ -1,4 +1,4 @@
-const Permission = require('../models/role.model');
+const Permission = require('../models/permission.model');
 const { body } = require('express-validator');
 
 const {
@@ -10,18 +10,42 @@ const {
 const field = () => {
     return [
       body('name', IS_REQUIRED).not().isEmpty()
-      .custom(async value => {
-        const permission = await Permission.findOne({name: value})
-        if (permission) {
-          return Promise.reject(IS_EXIST);
+      .custom(async (value, {req}) => {
+        if(req.body._id) {
+          const permission = await Permission.findById(req.body._id)
+          if(permission) {
+            if(permission.name !== value) {
+              const permission_exist = await Permission.findOne({name: value})
+              if (permission_exist) {
+                return Promise.reject(IS_EXIST);
+              }
+            }
+          }
+        } else {
+          const permission_exist = await Permission.findOne({name: value})
+          if (permission_exist) {
+            return Promise.reject(IS_EXIST);
+          }
         }
       })
     ,
       body('display_name', IS_REQUIRED).not().isEmpty()
-      .custom(async value => {
-        const permission = await Permission.findOne({display_name: value})
-        if (permission) {
-          return Promise.reject(IS_EXIST);
+      .custom(async (value, {req}) => {
+        if(req.body._id) {
+          const permission = await Permission.findById(req.body._id)
+          if(permission) {
+            if(permission.display_name !== value) {
+              const permission_exist = await Permission.findOne({display_name: value})
+              if (permission_exist) {
+                return Promise.reject(IS_EXIST);
+              }
+            }
+          }
+        } else {
+          const permission_exist = await Permission.findOne({display_name: value})
+          if (permission_exist) {
+            return Promise.reject(IS_EXIST);
+          }
         }
       })
     ]
