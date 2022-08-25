@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const url = 'mongodb://localhost:27017/cms';
+const url = 'mongodb+srv://leanhtu5991:LeeTu2210@cluster0.5a4aj.mongodb.net/real-estate?retryWrites=true&w=majority';
 // const { DB_MONGO: url } = process.env;
 mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
 

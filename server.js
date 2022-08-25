@@ -34,7 +34,7 @@ log4js.configure({
 
 const logger = log4js.getLogger('default');
 
-const port = 8080;
+const port = 8000;
 
 app.set('port', port);
 app.set('view engine', 'ejs');
@@ -66,7 +66,7 @@ app.use(bodyParser.urlencoded({ limit: '900mb', extended: true }));
 app.use(cookieParser());
 
 const router = require ('./routers');
-const ioAllowedOrigins = ["http://localhost:3000", "https://crm.mohinhtuduy.com", "http://localhost:22105", "http://localhost:8060"];
+const ioAllowedOrigins = ["http://localhost:3000"];
 
 var corsOptions = {
   origin: function (origin, callback) {
