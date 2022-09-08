@@ -11,11 +11,7 @@ const login = async function(req, res) {
       const user = await User.findOne({ email: email }).populate(
         { 
           path: 'role',
-          populate: [
-            {
-              path: 'permissions'
-            }
-          ]    
+          populate: [{path: 'permissions'}]    
         })
       if (user) {
         const checkPassword = await bcrypt.compare(password, user.password)
@@ -80,21 +76,21 @@ const me = async function(req, res) {
   
 const add = async function(req, res) {
     try {
-        const { full_name, email, role, password, age, sex, birthday, adress } = req.body;
+        const { fullname, username, email, role, password, birthday, adress, phone } = req.body;
         const { USER_PASSWORD_SALT_ROUNDS: saltRounds = 10 } = process.env;
         const passwordHash = bcrypt.hashSync(password, +saltRounds);
         const user = new User({
-            full_name,
+            fullname,
+            username, 
             email,
             role,
             password: passwordHash,
-            age,
-            sex,
             birthday,
-            adress
+            adress,
+            phone
         });
         const error = user.validateSync();
-        if(error) return res.status(401).send(error)
+        if(error) return res.status(422).send(error)
         await user.save()
         return res.status(200).send(user)
     }
@@ -107,7 +103,8 @@ const add = async function(req, res) {
 const update = async function(req, res) {
     try {
         const user = req.body;
-        await User.updateOne({_id:user._id}, user);
+        const { id } = req.params;
+        await User.updateOne({_id:id}, user);
         res.status(200).send(true)
     }
     catch (error) {
@@ -153,7 +150,7 @@ const list = async (
         ]}
         // filter = { name: new RegExp(`.*${keyword}.*`, "i")}
       }
-
+      
       if (isCounting) {
         const count = await User.countDocuments(filter)
         return count
@@ -191,6 +188,43 @@ const list = async (
     }
     return []
 }
+
+const lookup = async function(req, res) {
+  try{
+      const { id } = req.params;
+      const {role} = req.query;
+      if(id){
+          console.log(id)
+          let user = await User.findById(id).populate({ path: 'role',populate: {path: 'permissions',}});
+          // User.find({_id:id});
+          User.aggregate[{$match : { _id: id}}]
+          res.status(200).send(user)
+      }else{
+          const filter= {}
+          if(role){
+              filter.role = role
+          }
+          console.log(filter)
+          const user = await User.find(filter).populate({ path: 'role',populate: {path: 'permissions',}});
+          res.status(200).send(user)
+      }
+      return
+  }
+  catch (error) {
+      console.log('error', error)
+      return res.status(400).send(error)
+  }
+}
+const remove = async function(req, res) {
+  try {
+      const _id = req.body._id;
+      await User.deleteOne({_id: _id});
+      return res.status(200).send(true)
+  }
+  catch (error) {
+      return res.status(401).send({mess: "success"})
+  }
+}
 module.exports = {
     login, 
     logout,
@@ -198,5 +232,7 @@ module.exports = {
     add,
     update,
     list,
-    listForDataTable
+    listForDataTable,
+    lookup,
+    remove
 }

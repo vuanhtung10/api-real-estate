@@ -14,17 +14,31 @@ const add = async function(req, res) {
     }
 }
 
+// const edit = async function(req, res) {
+//     try {
+//         const role = req.body;
+//         const {permissionIdList} = req.body;
+//         role.permissions = permissionIdList
+//         await Role.updateOne({_id: role._id}, role);
+//         return res.status(200).send(true)
+//     }
+//     catch (error) {
+//         return res.status(401).send(error)
+//     }
+// }
+
 const edit = async function(req, res) {
-    try {
-        const role = req.body;
-        const {permissionIdList} = req.body;
-        role.permissions = permissionIdList
-        await Role.updateOne({_id: role._id}, role);
-        return res.status(200).send(true)
-    }
-    catch (error) {
-        return res.status(401).send(error)
-    }
+  try {
+      const role = req.body;
+      console.log("role",role)
+      const { id } = req.params;
+      await Role.updateOne({_id:id}, role).populate({path: 'permissions'});
+      res.status(200).send(role)
+  }
+  catch (error) {
+      console.log('error', error)
+      return res.status(401).send(error)
+  }
 }
 
 const remove = async function(req, res) {
@@ -92,7 +106,7 @@ const list = async (
       }
       const result = await Role
         .find(filter)
-        .populate('role')
+        .populate('role').populate('permissions')
       //   .populate({ path: 'role', match: { $or: [
       //     { display_name: { $regex: `.*${keyword}.*` }}
       // ] }})
@@ -130,6 +144,25 @@ const suggest = async function(req, res) {
     }
 }
 
+const lookup = async function(req, res) {
+  try{
+      const { id } = req.params;
+      if(id){
+          console.log(id)
+          let role = await Role.findById(id).populate({path: 'permissions'});
+          Role.aggregate[{$match : { _id: id}}]
+          res.status(200).send(role)
+      }else{
+          const role = await Role.find({});
+          res.status(200).send(role)
+      }
+      return
+  }
+  catch (error) {
+      console.log('error', error)
+      return res.status(400).send(error)
+  }
+}
 module.exports = {
-    add, edit, remove, suggest, listForDataTable
+    add, edit, remove, suggest, listForDataTable, lookup
 }
