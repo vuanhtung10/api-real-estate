@@ -76,17 +76,15 @@ const me = async function(req, res) {
   
 const add = async function(req, res) {
     try {
-        const { full_name, user_name, email, role, password, age, sex, birthday, adress, phone } = req.body;
+        const { fullname, username, email, role, password, birthday, adress, phone } = req.body;
         const { USER_PASSWORD_SALT_ROUNDS: saltRounds = 10 } = process.env;
         const passwordHash = bcrypt.hashSync(password, +saltRounds);
         const user = new User({
-            full_name,
-            user_name, 
+            fullname,
+            username, 
             email,
             role,
             password: passwordHash,
-            age,
-            sex,
             birthday,
             adress,
             phone

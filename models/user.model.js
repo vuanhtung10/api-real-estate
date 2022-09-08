@@ -3,15 +3,14 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
   {
-    full_name: {type: String, required: true},
-    user_name: {type: String, required: true},
+    fullname: {type: String, required: true},
+    username: {type: String, required: true},
     password : {type: String, required: true},
     email: {type: String, required: true},
     role: {type: Schema.Types.ObjectId, ref: 'role'},
     birthday : {type: Date},
     adress : {type: Array},
     phone: {type: Number},
-    houses: [{type: Schema.Types.ObjectId, ref: 'houses'}],
     create_at: {type: Date, default: Date.now},
     update_at: {type: Date, default: Date.now}
   },
