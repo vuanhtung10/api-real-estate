@@ -1,13 +1,13 @@
-const Permission = require('../models/permission.model');
+const Relation = require('../models/relation.model');
 const { getDataTableParams } = require('../utils/dataTable');
 
 const add = async function(req, res) {
     try {
-        const permission = new Permission(req.body);
-        const error = permission.validateSync();
+        const relation = new Relation(req.body);
+        const error = relation.validateSync();
         if(error) return res.status(422).send(error)
-        await permission.save();
-        return res.status(200).send(permission)
+        await relation.save();
+        return res.status(200).send(relation)
     }
     catch (error) {
         return res.status(401).send(error)
@@ -16,8 +16,8 @@ const add = async function(req, res) {
 
 const edit = async function(req, res) {
     try {
-        const permission = req.body;
-        await Permission.updateOne({_id: permission._id}, permission);
+        const relation = req.body;
+        await Relation.updateOne({_id: relation._id}, relation);
         return res.status(200).send(true)
     }
     catch (error) {
@@ -27,26 +27,12 @@ const edit = async function(req, res) {
 
 const remove = async function(req, res) {
     try {
-    //     const _id = req.body._id;
-    //     const { id } = req.params;
-    //     await Permission.deleteOne({_id:permission.id});
-    //     return res.status(200).send(true)
-    // }
-    // catch (error) {
-    //     return res.status(401).send({mess: "success"})
-      const { id } = req.params;
-      let permission = await Permission.findById(id)
-      if(id){
-          console.log(id)
-          permission.deleteOne({_id:id});
-          res.status(200).send(true)
-          return
-      }
-      res.status(200).send(false)
-  }
-  catch (error) {
-      console.log('error', error)
-      return res.status(400).send(error)
+        const _id = req.body._id;
+        await Relation.deleteOne({_id: _id});
+        return res.status(200).send(true)
+    }
+    catch (error) {
+        return res.status(401).send({mess: "success"})
     }
 }
 
@@ -87,30 +73,31 @@ const list = async (
       }
 
       if (isCounting) {
-        const count = await Permission.countDocuments(filter)
+        const count = await Relation.countDocuments(filter)
         return count
       }
 
       const sortObj = {}
       sortObj[sortBy] = sortType
       if (length === -1) {
-        const result = await Permission
+        const result = await Relation
           .find(filter)
           .sort(sortObj)
+          .populate('user').polulate('plot')
           .lean()
-
         return result
       }
-      const result = await Permission
+
+      const result = await Relation
         .find(filter)
         .limit(length)
         .skip(start)
+        .populate('user').polulate('plot')
         .lean()
-
       return result
-    } catch (e) {
     }
-
+     
+    catch (e) {}
     if (isCounting) {
       return 0
     }
@@ -126,8 +113,8 @@ const suggest = async function(req, res) {
                 { display_name: { $regex: `.*${keyword}.*` } }
             ]}
         }
-        const permissions = await Permission.find(filter).lean()
-        return res.status(200).send({data:permissions})
+        const relation = await Relation.find(filter).lean()
+        return res.status(200).send({data:relation})
     }
     catch (error) {
         return res.status(401).send(error)
@@ -139,12 +126,12 @@ const lookup = async function(req, res) {
       const { id } = req.params;
       if(id){
           console.log(id)
-          let permission = await Permission.findById(id);
-          Permission.aggregate[{$match : { _id: id}}]
-          res.status(200).send(permission)
+          let relation = await Relation.findById(id);
+          Relation.aggregate[{$match : { _id: id}}]
+          res.status(200).send(relation)
       }else{
-          const permission = await Permission.find({});
-          res.status(200).send(permission)
+          const relation = await Relation.find({});
+          res.status(200).send(Relation)
       }
       return
   }

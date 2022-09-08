@@ -1,5 +1,5 @@
 const Role = require('../models/role.model');
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 
 const {
     IS_REQUIRED,
@@ -53,10 +53,17 @@ const field = () => {
 
 const remove = () => {
     return [
-      body('_id', ERROR_OBJECT_ID).isMongoId()
+      param('id', ERROR_OBJECT_ID).isMongoId()
     ]
 }
 
+const update = () => {
+  return [
+    body('name', IS_REQUIRED).not().isEmpty(),
+    body('display_name', IS_REQUIRED).not().isEmpty(),
+  ]
+}
+
 module.exports = {
-    field, remove
+    field, remove, update
 }
