@@ -49,7 +49,7 @@ const update = () => {
         .not().isEmpty().withMessage(EMAIL_IS_REQUIRED)
         .isEmail().withMessage(EMAIL_FORMAT_ERROR)
       ,
-      body('password', PASSWORD_AT_LEAST).isLength({ min: 8 })
+      // body('password', PASSWORD_AT_LEAST).isLength({ min: 8 })
     ]
 }
 
