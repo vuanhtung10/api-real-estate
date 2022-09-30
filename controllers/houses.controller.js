@@ -60,17 +60,28 @@ const add = async function(req, res) {
     }
 }
 
+// const update = async function(req, res) {
+//     try {
+//         const houses = req.body;
+//         const { id } = req.params;
+//         await Houses.updateOne({_id: house.id}, houses);
+//         res.status(200).send(true)
+//     }
+//     catch (error) {
+//         console.log('error', error)
+//         return res.status(401).send(error)
+//     }
+// }
+
 const update = async function(req, res) {
-    try {
-        const houses = req.body;
-        const { id } = req.params;
-        await Houses.updateOne({_id:id}, houses);
-        res.status(200).send(true)
-    }
-    catch (error) {
-        console.log('error', error)
-        return res.status(401).send(error)
-    }
+  try {
+      const houses = req.body;
+      await Houses.updateOne({_id: houses._id}, houses);
+      return res.status(200).send(true)
+  }
+  catch (error) {
+      return res.status(401).send(error)
+  }
 }
 
 const listForDataTable = async (req, res) => {
@@ -122,14 +133,14 @@ const list = async (
         const result = await Houses
           .find(filter)
           // .sort(sortObj)
-          .populate('role')
+          .populate('user')
           .lean()
 
         return result
       }
       const result = await Houses
         .find(filter)
-        .populate('role')
+        .populate('user')
       //   .populate({ path: 'role', match: { $or: [
       //     { display_name: { $regex: `.*${keyword}.*` }}
       // ] }})
@@ -177,7 +188,7 @@ const lookup = async function(req, res) {
 
 const remove = async function(req, res) {
   try {
-      const _id = req.body._id;
+      const _id = req.params.id;
       await Houses.deleteOne({_id: _id});
       return res.status(200).send(true)
   }
@@ -186,6 +197,22 @@ const remove = async function(req, res) {
   }
 }
 
+const suggest = async function(req, res) {
+  try {
+      const {page, keyword} = req.body
+      let filter = {}
+      if (keyword) {
+          filter = { $or: [
+              { direction: { $regex: `.*${keyword}.*` } }
+          ]}
+      }
+      const houses = await Houses.find(filter).lean()
+      return res.status(200).send({data:houses})
+  }
+  catch (error) {
+      return res.status(401).send(error)
+  }
+}
 module.exports = {
     // me,
     add,
@@ -193,5 +220,6 @@ module.exports = {
     list,
     listForDataTable,
     lookup,
-    remove
+    remove,
+    suggest
 }

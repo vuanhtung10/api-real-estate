@@ -14,36 +14,36 @@ const add = async function(req, res) {
     }
 }
 
-// const edit = async function(req, res) {
-//     try {
-//         const role = req.body;
-//         const {permissionIdList} = req.body;
-//         role.permissions = permissionIdList
-//         await Role.updateOne({_id: role._id}, role);
-//         return res.status(200).send(true)
-//     }
-//     catch (error) {
-//         return res.status(401).send(error)
-//     }
-// }
-
 const edit = async function(req, res) {
-  try {
-      const role = req.body;
-      console.log("role",role)
-      const { id } = req.params;
-      await Role.updateOne({_id:id}, role).populate({path: 'permissions'});
-      res.status(200).send(role)
-  }
-  catch (error) {
-      console.log('error', error)
-      return res.status(401).send(error)
-  }
+    try {
+        const role = req.body;
+        const {permissionIdList} = req.body;
+        role.permissions = permissionIdList
+        await Role.updateOne({_id: role._id}, role);
+        return res.status(200).send(true)
+    }
+    catch (error) {
+        return res.status(401).send(error)
+    }
 }
+
+// const edit = async function(req, res) {
+//   try {
+//       // const role = req.body;
+//       // console.log("role",role)
+//       // const { id } = req.params.id;
+//       // await Role.updateOne({_id:id}, role).populate({path: 'permissions'});
+//       // res.status(200).send(role)
+//   }
+//   catch (error) {
+//       console.log('error', error)
+//       return res.status(401).send(error)
+//   }
+// }
 
 const remove = async function(req, res) {
     try {
-        const _id = req.body._id;
+        const _id = req.params.id;
         await Role.deleteOne({_id: _id});
         return res.status(200).send(true)
     }
@@ -106,7 +106,7 @@ const list = async (
       }
       const result = await Role
         .find(filter)
-        .populate('role').populate('permissions')
+        .populate('role')
       //   .populate({ path: 'role', match: { $or: [
       //     { display_name: { $regex: `.*${keyword}.*` }}
       // ] }})
@@ -149,7 +149,7 @@ const lookup = async function(req, res) {
       const { id } = req.params;
       if(id){
           console.log(id)
-          let role = await Role.findById(id).populate({path: 'permissions'});
+          let role = await Role.findById(id);
           Role.aggregate[{$match : { _id: id}}]
           res.status(200).send(role)
       }else{

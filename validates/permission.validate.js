@@ -61,7 +61,6 @@ const remove = () => {
 const update = () => {
   return [
     body('name', IS_REQUIRED).not().isEmpty(),
-    body('role', IS_REQUIRED).not().isEmpty(),
   ]
 }
 

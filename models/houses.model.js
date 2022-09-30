@@ -13,7 +13,7 @@ const housesSchema = new Schema(
         city:{type: String},
         district:{type: String},
         adress:{type: String},
-        user: [{type: Schema.Types.ObjectId, ref: 'user'}],
+        user: {type: Schema.Types.ObjectId, ref: 'user'},
         status:{type: String},
         type:{ type: String},
         plot:[{type: Schema.Types.ObjectId, ref: 'plot'}],

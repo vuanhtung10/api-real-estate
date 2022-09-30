@@ -103,8 +103,8 @@ const add = async function(req, res) {
 const update = async function(req, res) {
     try {
         const user = req.body;
-        const { id } = req.params;
-        await User.updateOne({_id:id}, user);
+        // const id = req.params.id;
+        await User.updateOne({_id: user._id}, user);
         res.status(200).send(true)
     }
     catch (error) {
@@ -217,7 +217,7 @@ const lookup = async function(req, res) {
 }
 const remove = async function(req, res) {
   try {
-      const _id = req.body._id;
+      const _id = req.params.id;
       await User.deleteOne({_id: _id});
       return res.status(200).send(true)
   }
@@ -225,6 +225,24 @@ const remove = async function(req, res) {
       return res.status(401).send({mess: "success"})
   }
 }
+
+const suggest = async function(req, res) {
+  try {
+      const {page, keyword} = req.body
+      let filter = {}
+      if (keyword) {
+          filter = { $or: [
+              { username: { $regex: `.*${keyword}.*` } }
+          ]}
+      }
+      const users = await User.find(filter).lean()
+      return res.status(200).send({data:users})
+  }
+  catch (error) {
+      return res.status(401).send(error)
+  }
+}
+
 module.exports = {
     login, 
     logout,
@@ -234,5 +252,6 @@ module.exports = {
     list,
     listForDataTable,
     lookup,
-    remove
+    remove,
+    suggest
 }

@@ -9,7 +9,7 @@ const relationRouter = require('./relation.router');
 router.use('/user', userRouter);
 router.use('/role', roleRouter);
 router.use('/permission', permissionRouter);
-router.use('/houses', housesRouter);
+router.use('/house', housesRouter);
 router.use('/plot', plotRouter);
 router.use('/relation', relationRouter)
 

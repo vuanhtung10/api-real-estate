@@ -12,5 +12,6 @@ userRouter.get('/:id?', UserController.lookup);
 userRouter.delete('/:id', UserController.remove);
 userRouter.post('/me', AuthMiddleware.checkAuth, UserController.me);
 userRouter.post('/list-for-datatable', AuthMiddleware.checkAuth, UserController.listForDataTable);
+userRouter.post('/suggest', AuthMiddleware.checkAuth, UserController.suggest);
 
 module.exports = userRouter;
