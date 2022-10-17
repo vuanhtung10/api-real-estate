@@ -60,19 +60,6 @@ const add = async function(req, res) {
     }
 }
 
-// const update = async function(req, res) {
-//     try {
-//         const houses = req.body;
-//         const { id } = req.params;
-//         await Houses.updateOne({_id: house.id}, houses);
-//         res.status(200).send(true)
-//     }
-//     catch (error) {
-//         console.log('error', error)
-//         return res.status(401).send(error)
-//     }
-// }
-
 const update = async function(req, res) {
   try {
       const houses = req.body;
@@ -116,10 +103,8 @@ const list = async (
       let filter = {}
       if (keyword) {
         filter = { $or: [
-          { full_name: { $regex: `.*${keyword}.*` } },
-          { email: { $regex: `.*${keyword}.*` } }
+          { plot: { $regex: `.*${keyword}.*` } }
         ]}
-        // filter = { name: new RegExp(`.*${keyword}.*`, "i")}
       }
 
       if (isCounting) {
@@ -132,23 +117,19 @@ const list = async (
       if (length === -1) {
         const result = await Houses
           .find(filter)
-          // .sort(sortObj)
-          .populate('user')
+          .sort(sortObj)
+          .populate('user').populate('plot')
           .lean()
-
+          console.log("result", result)
         return result
       }
       const result = await Houses
         .find(filter)
-        .populate('user')
-      //   .populate({ path: 'role', match: { $or: [
-      //     { display_name: { $regex: `.*${keyword}.*` }}
-      // ] }})
-        // .sort(sortObj)
         .limit(length)
         .skip(start)
+        .populate('plot')
+        .populate('user')
         .lean()
-
       return result
     } catch (e) {
       console.log(e)

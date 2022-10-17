@@ -16,7 +16,7 @@ const housesSchema = new Schema(
         user: {type: Schema.Types.ObjectId, ref: 'user'},
         status:{type: String},
         type:{ type: String},
-        plot:[{type: Schema.Types.ObjectId, ref: 'plot'}],
+        plot:{type: Schema.Types.ObjectId, ref: 'plot'},
         create_at: {type: Date, default: Date.now},
         update_at: {type: Date, default: Date.now}
     },

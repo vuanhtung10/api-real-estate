@@ -27,7 +27,7 @@ const edit = async function(req, res) {
 
 const remove = async function(req, res) {
     try {
-        const _id = req.body._id;
+        const _id = req.params.id;
         await Plot.deleteOne({_id: _id});
         return res.status(200).send(true)
     }
@@ -109,7 +109,7 @@ const suggest = async function(req, res) {
         let filter = {}
         if (keyword) {
             filter = { $or: [
-                { display_name: { $regex: `.*${keyword}.*` } }
+                { name: { $regex: `.*${keyword}.*` } }
             ]}
         }
         const plot = await Plot.find(filter).lean()

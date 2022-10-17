@@ -10,5 +10,6 @@ plotRouter.delete('/:id', PlotValidate.remove(), validate, PlotController.remove
 plotRouter.get('/:id?', AuthMiddleware.checkAuth, validate, PlotController.lookup);
 plotRouter.post('/list-for-datatable', AuthMiddleware.checkAuth, validate, PlotController.listForDataTable);
 plotRouter.post('/select-list', AuthMiddleware.checkAuth, PlotController.suggest);
+plotRouter.post('/suggest', AuthMiddleware.checkAuth, PlotController.suggest);
 
 module.exports = plotRouter;

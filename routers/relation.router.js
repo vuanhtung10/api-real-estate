@@ -1,6 +1,6 @@
 const relationRouter = require('express').Router();
-const RelationController = require('../controllers/plot.controller');
-const RelationValidate = require('../validates/plot.validate');
+const RelationController = require('../controllers/relation.controller');
+const RelationValidate = require('../validates/relation.validate');
 const AuthMiddleware = require('../middlewares/auth.middleware');
 const {validate} = require('../validates/validate');
 
@@ -10,5 +10,6 @@ relationRouter.delete('/:id', RelationValidate.remove(), validate, RelationContr
 relationRouter.post('/list-for-datatable', AuthMiddleware.checkAuth, validate, RelationController.listForDataTable);
 relationRouter.post('/select-list', AuthMiddleware.checkAuth, RelationController.suggest);
 relationRouter.get('/:id?', AuthMiddleware.checkAuth, RelationController.lookup);
+relationRouter.post('/suggest', AuthMiddleware.checkAuth, RelationController.suggest);
 
 module.exports = relationRouter;
