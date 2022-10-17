@@ -27,7 +27,7 @@ const edit = async function(req, res) {
 
 const remove = async function(req, res) {
     try {
-        const _id = req.body._id;
+        const _id = req.params.id;
         await Relation.deleteOne({_id: _id});
         return res.status(200).send(true)
     }
@@ -68,7 +68,7 @@ const list = async (
       let filter = {}
       if (keyword) {
         filter = { $or: [
-          { display_name: { $regex: `.*${keyword}.*` } }
+          { plot: { $regex: `.*${keyword}.*` } }
         ]}
       }
 
@@ -85,6 +85,7 @@ const list = async (
           .sort(sortObj)
           .populate('user').polulate('plot')
           .lean()
+          console.log("result", result)
         return result
       }
 
@@ -92,8 +93,10 @@ const list = async (
         .find(filter)
         .limit(length)
         .skip(start)
-        .populate('user').polulate('plot')
+        .populate('plot')
+        .populate('user')
         .lean()
+      console.log("result", result)
       return result
     }
      
@@ -110,7 +113,7 @@ const suggest = async function(req, res) {
         let filter = {}
         if (keyword) {
             filter = { $or: [
-                { display_name: { $regex: `.*${keyword}.*` } }
+                { name: { $regex: `.*${keyword}.*` } }
             ]}
         }
         const relation = await Relation.find(filter).lean()

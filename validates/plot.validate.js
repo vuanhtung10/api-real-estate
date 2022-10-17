@@ -28,26 +28,6 @@ const field = () => {
           }
         }
       })
-    ,
-      body('status', IS_REQUIRED).not().isEmpty()
-      .custom(async (value, {req}) => {
-        if(req.body._id) {
-          const plot = await Plot.findById(req.body._id)
-          if(plot) {
-            if(plot.status !== value) {
-              const plot_exist = await Plot.findOne({status: value})
-              if (plot_exist) {
-                return Promise.reject(IS_EXIST);
-              }
-            }
-          }
-        } else {
-          const plot_exist = await Plot.findOne({status: value})
-          if (plot_exist) {
-            return Promise.reject(IS_EXIST);
-          }
-        }
-      })
     ]
 }
 
