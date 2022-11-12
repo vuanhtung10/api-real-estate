@@ -149,18 +149,19 @@ const lookup = async function(req, res) {
   try{
       const { id } = req.params;
       const {user} = req.query;
+      const start = req.query.start ? parseInt(req.query.start) : 0;
+      const limit = req.query.limit ? parseInt(req.query.limit) : 0;
       if(id){
-          console.log(id)
-          let houses = await Houses.findById(id).populate({ path: 'user',populate: {path: 'role',populate: {path: 'permission'}}});
-          Houses.aggregate[{$match : { _id: id}}]
+          let houses = await Houses.findById(id)
+            .populate({ path: 'user',populate: {path: 'role',populate: {path: 'permission'}}});
           res.status(200).send(houses)
       }else{
           const filter= {}
-          if(role){
-              filter.role = role
-          }
-          console.log(filter)
-          const houses = await Houses.find(filter).populate({ path: 'user',populate: {path: 'role', populate: {path: 'permission'}}});
+          const houses = await Houses.find(filter)
+            .skip(start * limit)
+            .limit(limit)
+            .sort({ _id: -1 })
+            .populate({ path: 'user',populate: {path: 'role', populate: {path: 'permission'}}});
           res.status(200).send(houses)
       }
       return
