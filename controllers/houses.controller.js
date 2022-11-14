@@ -154,12 +154,13 @@ const lookup = async function(req, res) {
           res.status(200).send(houses)
       }else{
           const filter= {}
-          const houses = await Houses.find(filter)
+          const count = await Houses.countDocuments()
+          const listHouses = await Houses.find(filter)
             .skip(start * limit)
             .limit(limit)
             .sort({ _id: -1 })
             .populate({ path: 'user',populate: {path: 'role', populate: {path: 'permission'}}});
-          res.status(200).send(houses)
+          res.status(200).send({data: listHouses, total: count})
       }
       return
   }
