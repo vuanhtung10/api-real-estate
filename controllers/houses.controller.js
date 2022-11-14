@@ -34,12 +34,14 @@ const { getDataTableParams } = require('../utils/dataTable');
   
 const add = async function(req, res) {
     try {
-        const { name, area, price, description, direction, city, district, adress, user, status, type, plot, images} = req.body;
+        const { name, area, price, priceUnit, numbersRoom, description, direction, city, district, adress, user, status, type, plot, images, cover} = req.body;
         const houses = new Houses({
             name,  
             description,
             area,
-            price, 
+            price,
+            priceUnit,
+            numbersRoom, 
             direction,
             city,
             district,
@@ -48,7 +50,8 @@ const add = async function(req, res) {
             status,
             type,
             plot,
-            images
+            images,
+            cover
         });
         const error = houses.validateSync();
         if(error) return res.status(422).send(error)
