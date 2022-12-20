@@ -9,5 +9,5 @@ articleRouter.put('/:id',ArticleValidate.update(), validate, ArticleController.e
 articleRouter.get('/:id?', AuthMiddleware.checkAuth, ArticleController.lookup);
 articleRouter.delete('/:id',ArticleValidate.remove(), validate, ArticleController.remove);
 articleRouter.post('/list-for-datatable', AuthMiddleware.checkAuth, ArticleController.listForDataTable);
-
+articleRouter.get('/findbyslug/:slug', AuthMiddleware.checkAuth, ArticleController.findbyslug);
 module.exports = articleRouter;

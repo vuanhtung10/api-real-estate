@@ -2,7 +2,7 @@ const Houses = require('../models/houses.model');
 const Token = require('../models/token.model');
 // const JWTService = require('../utils/jwt');
 const { getDataTableParams } = require('../utils/dataTable');
-
+const { genSlug } = require('../utils/slug');
 // const me = async function(req, res) {
 //     try {
 //         const user = req.user;
@@ -34,11 +34,13 @@ const { getDataTableParams } = require('../utils/dataTable');
   
 const add = async function(req, res) {
     try {
-        const { name, area, price, priceUnit, numbersRoom, description, direction, city, district, adress, user, status, type, plot, images, cover} = req.body;
+        const { name, area, facade, furniture, price, priceUnit, numbersRoom, description, direction, city, district, adress, user, status, type, plot, images, cover} = req.body;
         const houses = new Houses({
             name,  
             description,
             area,
+            facade,
+            furniture,
             price,
             priceUnit,
             numbersRoom, 
@@ -53,6 +55,8 @@ const add = async function(req, res) {
             images,
             cover
         });
+        const slug = await genSlug(null, req.body.name, Houses);
+        houses.slug = slug
         const error = houses.validateSync();
         if(error) return res.status(422).send(error)
         await houses.save()
@@ -131,6 +135,7 @@ const list = async (
         .find(filter)
         .limit(length)
         .skip(start)
+        .sort({_id:-1})
         .populate('plot')
         .populate('user')
         .lean()
@@ -200,6 +205,28 @@ const suggest = async function(req, res) {
       return res.status(401).send(error)
   }
 }
+
+const findbyslug = async function(req, res) {
+  try{
+    const {slug} = req.params
+      if(slug) {
+        let house = await Houses.findOne({slug})
+        res.status(200).send(house)
+      // } else{
+      //   const count = await Article.countDocuments()
+      //   const listArticle = await Article.find()
+      //   .skip(start * limit)
+      //   .limit(limit)
+      //   .sort({ _id: -1 });
+      //   res.status(200).send({data: listArticle, total: count})
+      }
+      return
+  }
+  catch (error) {
+      console.log('error', error)
+      return res.status(400).send(error)
+  }
+}
 module.exports = {
     // me,
     add,
@@ -208,5 +235,6 @@ module.exports = {
     listForDataTable,
     lookup,
     remove,
-    suggest
+    suggest,
+    findbyslug
 }

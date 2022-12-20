@@ -1,23 +1,27 @@
 const Article = require('../models/article.model');
 const { getDataTableParams } = require('../utils/dataTable');
+const {genSlug} = require('../utils/slug');
 
 const add = async function(req, res) {
     try {
+        const slug = await genSlug(null, req.body.name, Article);
         const article = new Article(req.body);
+        article.slug = slug
         const error = article.validateSync();
         if(error) return res.status(422).send(error)
         await article.save();
         return res.status(200).send(article)
     }
     catch (error) {
-        return res.status(401).send(error)
+      console.log(error)
+      return res.status(400).send(error)
     }
 }
 
 const edit = async function(req, res) {
     try {
         const article = req.body;
-        await Article.updateOne({_id: article._id}, article);
+        await Article.updateOne({_id: article._id}, article.name,);
         return res.status(200).send(true)
     }
     catch (error) {
@@ -104,6 +108,7 @@ const list = async (
         .find(filter)
         .limit(length)
         .skip(start)
+        .sort({_id:-1})
         .lean()
 
       return result
@@ -139,6 +144,27 @@ const lookup = async function(req, res) {
       return res.status(400).send(error)
   }
 }
+const findbyslug = async function(req, res) {
+  try{
+    const {slug} = req.params
+      if(slug) {
+        let article = await Article.findOne({slug})
+        res.status(200).send(article)
+      // } else{
+      //   const count = await Article.countDocuments()
+      //   const listArticle = await Article.find()
+      //   .skip(start * limit)
+      //   .limit(limit)
+      //   .sort({ _id: -1 });
+      //   res.status(200).send({data: listArticle, total: count})
+      }
+      return
+  }
+  catch (error) {
+      console.log('error', error)
+      return res.status(400).send(error)
+  }
+}
 module.exports = {
-    add, edit, remove, listForDataTable, lookup
+    add, edit, remove, listForDataTable, lookup, findbyslug
 }

@@ -8,6 +8,8 @@ const housesSchema = new Schema(
         name: {type: String},
         description: {type: String},
         area:{type: String},
+        facade:{type: Number},
+        furniture:{type: String},
         price: {type: Number},
         priceUnit: {type: Number},
         numbersRoom: {type: Number},
@@ -21,6 +23,7 @@ const housesSchema = new Schema(
         cover:{ type: String},
         images:{ type: Array },
         thumbnail:{type: String},
+        slug:{type: String},
         plot:{type: Schema.Types.ObjectId, ref: 'plot'},
         create_at: {type: Date, default: Date.now},
         update_at: {type: Date, default: Date.now}

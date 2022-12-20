@@ -11,5 +11,6 @@ housesRouter.get('/:id?', AuthMiddleware.checkAuth, HousesController.lookup);
 housesRouter.delete('/:id',HousesValidate.remove(), validate, HousesController.remove);
 housesRouter.post('/list-for-datatable', AuthMiddleware.checkAuth, HousesController.listForDataTable);
 housesRouter.post('/listDirection', AuthMiddleware.checkAuth, HousesController.suggest);
+housesRouter.get('/findbyslug/:slug', AuthMiddleware.checkAuth, HousesController.findbyslug);
 
 module.exports = housesRouter;
