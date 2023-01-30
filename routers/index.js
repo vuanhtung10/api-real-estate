@@ -7,6 +7,7 @@ const plotRouter = require('./plot.router');
 const relationRouter = require('./relation.router');
 const articleRouter = require('./article.router');
 const mediaRouter = require('./media.router');
+const provinceRouter = require('./province.router');
 router.use('/user', userRouter);
 router.use('/role', roleRouter);
 router.use('/permission', permissionRouter);
@@ -15,4 +16,5 @@ router.use('/plot', plotRouter);
 router.use('/relation', relationRouter)
 router.use('/article', articleRouter)
 router.use('/media', mediaRouter)
+router.use('/province', provinceRouter)
 module.exports = router;

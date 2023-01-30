@@ -30,64 +30,8 @@ const field = () => {
       })
     ,
       body('area', IS_REQUIRED).not().isEmpty()
-      // .custom(async (value, {req}) => {
-      //   if(req.body._id) {
-      //     const houses = await Houses.findById(req.body._id)
-      //     if(houses) {
-      //       if(houses.area !== value) {
-      //         const houses_exist = await Houses.findOne({display_name: value})
-      //         if (houses_exist) {
-      //           return Promise.reject(IS_EXIST);
-      //         }
-      //       }
-      //     }
-      //   } else {
-      //     const houses_exist = await Houses.findOne({display_name: value})
-      //     if (houses_exist) {
-      //       return Promise.reject(IS_EXIST);
-      //     }
-      //   }
-      // })
     ,
       body('price', IS_REQUIRED).not().isEmpty()
-      // .custom(async (value, {req}) => {
-      //   if(req.body._id) {
-      //     const houses = await Houses.findById(req.body._id)
-      //     if(houses) {
-      //       if(houses.price !== value) {
-      //         const houses_exist = await Houses.findOne({display_name: value})
-      //         if (houses_exist) {
-      //           return Promise.reject(IS_EXIST);
-      //         }
-      //       }
-      //     }
-      //   } else {
-      //     const houses_exist = await Houses.findOne({display_name: value})
-      //     if (houses_exist) {
-      //       return Promise.reject(IS_EXIST);
-      //     }
-      //   }
-      // })
-    ,
-      // body('user', IS_REQUIRED).not().isEmpty()
-      // .custom(async (value, {req}) => {
-      //   if(req.body._id) {
-      //     const houses = await Houses.findById(req.body._id)
-      //     if(houses) {
-      //       if(houses.user !== value) {
-      //         const houses_exist = await Houses.findOne({display_name: value})
-      //         if (houses_exist) {
-      //           return Promise.reject(IS_EXIST);
-      //         }
-      //       }
-      //     }
-      //   } else {
-      //     const houses_exist = await Houses.findOne({display_name: value})
-      //     if (houses_exist) {
-      //       return Promise.reject(IS_EXIST);
-      //     }
-      //   }
-      // })
     ]
 }
 
@@ -99,10 +43,26 @@ const remove = () => {
 
 const update = () => {
   return [
-    body('name', IS_REQUIRED).not().isEmpty(),
-    body('area', IS_REQUIRED).not().isEmpty(),
-    body('price', IS_REQUIRED).not().isEmpty(),
-    body('user', IS_REQUIRED).not().isEmpty(),
+    body('name')
+    .custom(async (value, {req}) => {
+      if(req.body._id) {
+        const houses = await Houses.findById(req.params._id)
+        if(houses) {
+          if(houses.name !== value) {
+            const houses_exist = await Houses.findOne({name: value})
+            if (houses_exist) {
+              return Promise.reject(IS_EXIST);
+            }
+          }
+        }
+      } else {
+        const houses_exist = await Houses.findOne({name: value})
+        if (houses_exist) {
+          return Promise.reject(IS_EXIST);
+        }
+      }
+    })
+  ,
   ]
 }
 module.exports = {

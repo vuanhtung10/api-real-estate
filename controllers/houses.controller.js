@@ -71,11 +71,16 @@ const add = async function(req, res) {
 const update = async function(req, res) {
   try {
       const houses = req.body;
-      await Houses.updateOne({_id: houses._id}, houses);
+      // const slug = await genSlug(null, req.body.name, Houses);
+      // houses.slug = slug
+      const { id } = req.params;
+      console.log("id", id);
+      await Houses.updateOne({_id: id}, houses);
       return res.status(200).send(true)
   }
   catch (error) {
-      return res.status(401).send(error)
+    console.log("errỏ", error)
+      return res.status(400).send(error)
   }
 }
 
@@ -153,7 +158,7 @@ const list = async (
 const lookup = async function(req, res) {
   try{
       const { id } = req.params;
-      const {user} = req.query;
+      // const {user} = req.query;
       const start = req.query.start ? parseInt(req.query.start) : 0;
       const limit = req.query.limit ? parseInt(req.query.limit) : 0;
       if(id){

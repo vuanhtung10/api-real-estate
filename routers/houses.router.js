@@ -5,7 +5,7 @@ const AuthMiddleware = require('../middlewares/auth.middleware');
 const {validate} = require('../validates/validate');
 
 housesRouter.post('/', HousesValidate.field(), validate, HousesController.add);
-housesRouter.put('/:id',HousesValidate.update(), validate, HousesController.update);
+housesRouter.put('/:id', HousesController.update);
 housesRouter.get('/:id?', AuthMiddleware.checkAuth, HousesController.lookup);
 // housesRouter.post('/me', AuthMiddleware.checkAuth, HousesController.me);
 housesRouter.delete('/:id',HousesValidate.remove(), validate, HousesController.remove);
