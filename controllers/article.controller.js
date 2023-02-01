@@ -1,3 +1,4 @@
+const { header } = require('express-validator');
 const Article = require('../models/article.model');
 const { getDataTableParams } = require('../utils/dataTable');
 const {genSlug} = require('../utils/slug');
@@ -21,7 +22,10 @@ const add = async function(req, res) {
 const edit = async function(req, res) {
     try {
         const article = req.body;
-        await Article.updateOne({_id: article._id}, article.name,);
+        const slug = await genSlug(null, req.body.name, Article)
+        article.slug = slug
+        console.log(article)
+        await Article.updateOne({_id: article._id}, article);
         return res.status(200).send(true)
     }
     catch (error) {
@@ -126,16 +130,19 @@ const lookup = async function(req, res) {
       const { id } = req.params;
       const start = req.query.start ? parseInt(req.query.start) : 0;
       const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+      const is_recommend = req.query.is_recommend
       if(id){
           let article = await Article.findById(id);
           res.status(200).send(article)
       }else{
           const count = await Article.countDocuments()
-          const listArticle = await Article.find()
+          // const listTopArticle = await Article.find({is_recommend})
+          const listArticle = await Article.find({is_recommend})
           .skip(start * limit)
           .limit(limit)
           .sort({ _id: -1 });
           res.status(200).send({data: listArticle, total: count})
+          // res.status(200).send({data: listTopArticle})
       }
       return
   }
@@ -165,6 +172,7 @@ const findbyslug = async function(req, res) {
       return res.status(400).send(error)
   }
 }
+
 module.exports = {
     add, edit, remove, listForDataTable, lookup, findbyslug
 }

@@ -8,7 +8,6 @@ const add = async function(req, res) {
         fetch('https://provinces.open-api.vn/api/?depth=3')
         .then((response) => response.json())
         .then((data) => {
-            let data = data.map
             Province.insertMany(data)
             return res.status(200).send(data)
         });
