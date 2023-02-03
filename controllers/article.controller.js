@@ -131,13 +131,18 @@ const lookup = async function(req, res) {
       const start = req.query.start ? parseInt(req.query.start) : 0;
       const limit = req.query.limit ? parseInt(req.query.limit) : 10;
       const is_recommend = req.query.is_recommend
+      const filter = {}
+      if(is_recommend) {
+        filter.is_recommend = true
+      }
+
       if(id){
           let article = await Article.findById(id);
           res.status(200).send(article)
       }else{
           const count = await Article.countDocuments()
-          // const listTopArticle = await Article.find({is_recommend})
-          const listArticle = await Article.find({is_recommend})
+          // const listTopArticle = await Article.find(filter)
+          const listArticle = await Article.find(filter)
           .skip(start * limit)
           .limit(limit)
           .sort({ _id: -1 });
