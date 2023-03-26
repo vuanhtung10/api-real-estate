@@ -71,15 +71,15 @@ const add = async function(req, res) {
 const update = async function(req, res) {
   try {
       const houses = req.body;
-      // const slug = await genSlug(null, req.body.name, Houses);
-      // houses.slug = slug
+      const slug = await genSlug(null, req.body.name, Houses);
+      houses.slug = slug
       const { id } = req.params;
       console.log("id", id);
       await Houses.updateOne({_id: id}, houses);
       return res.status(200).send(true)
   }
   catch (error) {
-    console.log("errỏ", error)
+    console.log("error", error)
       return res.status(400).send(error)
   }
 }

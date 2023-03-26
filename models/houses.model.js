@@ -10,7 +10,7 @@ const housesSchema = new Schema(
         area:{type: String},
         facade:{type: Number},
         furniture:{type: String},
-        price: {type: Number},
+        price: {type: String},
         priceUnit: {type: Number},
         numbersRoom: {type: Number},
         direction:{type: String},
